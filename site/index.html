@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Harmoness turns constitutional structure into music, then checks what survived the render.">
+  <title>Harmoness — constitutional music witnesses</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Harmoness home">
+      <span class="brand-mark">H</span>
+      <span>Harmoness</span>
+    </a>
+    <nav>
+      <a href="#compose">Compose</a>
+      <a href="#verify">Verify</a>
+      <a href="https://github.com/PaulTiffany/harmoness">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="eyebrow">CONSTITUTION → MUSIC → WITNESS</div>
+      <h1>Let the model improvise.<br><em>Keep the structure accountable.</em></h1>
+      <p class="lede">Harmoness maps the Constitution Wheel from <i>The Cost of Cacophony</i> into a musical contract, lets a stochastic music model perform it, then checks what survived.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#compose">Make a Suno prompt</a>
+        <a class="button ghost" href="#verify">Check a render</a>
+      </div>
+      <p class="privacy">Browser analysis stays on your device. No audio upload is required.</p>
+    </section>
+
+    <section class="panel wheel-panel" aria-labelledby="wheel-title">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">THE CONSTITUTION WHEEL</div>
+          <h2 id="wheel-title">Four principles. Four tonal identities.</h2>
+        </div>
+        <button class="small-button" id="play-sequence" type="button">Play C → G → D → A</button>
+      </div>
+
+      <div class="wheel" role="group" aria-label="Constitution Wheel notes">
+        <button class="principle p-c" data-note="C4" data-frequency="261.6256" type="button">
+          <span class="note">C</span><span class="principle-name">Helpful</span><span class="role">root</span>
+        </button>
+        <button class="principle p-g" data-note="G4" data-frequency="391.9954" type="button">
+          <span class="note">G</span><span class="principle-name">Harmless</span><span class="role">fifth</span>
+        </button>
+        <button class="principle p-d" data-note="D4" data-frequency="293.6648" type="button">
+          <span class="note">D</span><span class="principle-name">Honest</span><span class="role">tension</span>
+        </button>
+        <button class="principle p-a" data-note="A4" data-frequency="440" type="button">
+          <span class="note">A</span><span class="principle-name">Autonomy</span><span class="role">release</span>
+        </button>
+        <div class="wheel-center" aria-hidden="true">
+          <span>time</span>
+          <strong>organizes</strong>
+          <span>the whole</span>
+        </div>
+      </div>
+
+      <p class="caption">This is the v0 mapping used by Harmoness: Helpful→C, Harmless→G, Honest→D, Autonomy→A. The notes are identities, not moral scores.</p>
+    </section>
+
+    <section id="compose" class="panel">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">1 · COMPOSE</div>
+          <h2>Give Suno a constitutional score.</h2>
+        </div>
+      </div>
+
+      <div class="compose-grid">
+        <div class="controls">
+          <label for="condition">Organization</label>
+          <select id="condition">
+            <option value="resolution" selected>Resolution — crowded first, staged later</option>
+            <option value="staged">Staged — C → G → D → A</option>
+            <option value="simultaneous">Simultaneous — all four together</option>
+            <option value="order-mutant">Order mutant — A → D → G → C</option>
+          </select>
+
+          <label for="mood">Musical character</label>
+          <select id="mood">
+            <option value="artpop" selected>Emotional art-pop</option>
+            <option value="ambient">Environmental / ambient</option>
+            <option value="synthpop">Cinematic synth-pop</option>
+            <option value="vocal">A cappella / vocal counterpoint</option>
+          </select>
+
+          <label for="duration">Target length</label>
+          <select id="duration">
+            <option value="150">~2:30</option>
+            <option value="180" selected>~3:00</option>
+            <option value="210">~3:30</option>
+          </select>
+
+          <button id="generate-prompt" class="button primary full" type="button">Build Suno prompt</button>
+        </div>
+
+        <div class="prompt-card">
+          <div class="prompt-toolbar">
+            <span>Suno style / direction</span>
+            <button id="copy-prompt" class="small-button" type="button">Copy</button>
+          </div>
+          <textarea id="prompt-output" spellcheck="false" aria-label="Generated Suno prompt"></textarea>
+          <div class="prompt-foot">
+            <span id="prompt-count">0 characters</span>
+            <span>Generated from an explicit condition, not by listening first.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="verify" class="panel">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">2 · VERIFY</div>
+          <h2>Drop in the render. See what survived.</h2>
+        </div>
+        <span class="local-badge">LOCAL ANALYSIS</span>
+      </div>
+
+      <label class="dropzone" id="dropzone" for="audio-file">
+        <input id="audio-file" type="file" accept="audio/*">
+        <span class="drop-icon">♫</span>
+        <strong>Choose a Suno render</strong>
+        <span>or drop an audio file here</span>
+        <small>Decoded and measured in your browser. Nothing is sent to a server.</small>
+      </label>
+
+      <div id="analysis" class="analysis hidden" aria-live="polite">
+        <div class="verdict-row">
+          <div>
+            <div class="eyebrow">BROWSER WITNESS PREVIEW</div>
+            <h3 id="verdict-title">Analyzing…</h3>
+            <p id="file-meta"></p>
+          </div>
+          <div id="verdict-chip" class="verdict pending">…</div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><span>Duration</span><strong id="duration-value">—</strong></div>
+          <div class="metric"><span>Silence</span><strong id="silence-value">—</strong></div>
+          <div class="metric"><span>Expected path</span><strong id="path-value">C · G · D · A</strong></div>
+        </div>
+
+        <div class="section-results" id="section-results"></div>
+
+        <div class="receipt-actions">
+          <button id="download-receipt" class="button ghost" type="button" disabled>Download browser receipt</button>
+          <a class="button ghost" href="https://github.com/PaulTiffany/harmoness/tree/main/experiments/001-constitution-wheel">Experiment protocol</a>
+        </div>
+
+        <p class="caveat">The browser check is a fast public preview using deterministic signal analysis. Repository CI remains the canonical v0 witness for committed PCM WAV artifacts. Neither layer claims to measure whether the song is aesthetically good.</p>
+      </div>
+    </section>
+
+    <section class="panel explanation">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">WHY THIS EXISTS</div>
+          <h2>Separate rendering fidelity from musical judgment.</h2>
+        </div>
+      </div>
+      <div class="three-up">
+        <article><span>01</span><h3>Specify first</h3><p>Choose the constitutional organization before hearing a generation.</p></article>
+        <article><span>02</span><h3>Render stochastically</h3><p>Suno can improvise arrangement, voice, timbre, production and performance.</p></article>
+        <article><span>03</span><h3>Witness mechanically</h3><p>Admit or reject the render against declared structure, then ask humans whether it is good music.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>Harmoness</strong> · Humans write the experiment. Machines keep the ledger.</div>
+    <div><a href="https://github.com/PaulTiffany/cost">The Cost of Cacophony</a> · <a href="https://github.com/PaulTiffany/harmoness">Source</a></div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
