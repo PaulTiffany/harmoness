@@ -24,3 +24,11 @@ jobs:
         run: python -m json.tool specs/constitution-wheel-v0.json >/dev/null
       - name: Scan committed generation witnesses
         run: python scripts/verify_repository.py
+      - name: Static site smoke check
+        run: |
+          test -f site/index.html
+          test -f site/styles.css
+          test -f site/app.js
+          node --check site/app.js
+          grep -q "Constitution Wheel" site/index.html
+          grep -q "LOCAL ANALYSIS" site/index.html
