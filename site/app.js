@@ -7,6 +7,12 @@ const CACOPHONY = [
   {principle:"Honest",note:"D",role:"tension voice",prominence:4},
   {principle:"Autonomy",note:"A",role:"countervoice",prominence:3}
 ];
+const CLAUDE_2026 = [
+  {principle:"Broadly safe",note:"C",role:"bass / pedal",prominence:5},
+  {principle:"Broadly ethical",note:"G",role:"supporting voice",prominence:4},
+  {principle:"Anthropic guidelines",note:"D",role:"countervoice",prominence:3},
+  {principle:"Genuinely helpful",note:"A",role:"foreground melody",prominence:2}
+];
 let state = { mapping: structuredClone(CACOPHONY) };
 let audioContext;
 let lastReceipt = null;
@@ -86,7 +92,11 @@ function changed(){ ensureMapping();renderEditor();renderMapOnly(); }
 function syncDerived(){ buildPrompt();renderVerifyContract(); }
 
 document.getElementById("preset").addEventListener("change",e=>{
-  state.mapping=e.target.value==="cacophony"?structuredClone(CACOPHONY):FIFTHS.slice(0,4).map((note,i)=>({principle:`Principle ${i+1}`,note,role:i===0?"tonal center":"supporting voice",prominence:3}));
+  state.mapping=e.target.value==="cacophony"
+    ? structuredClone(CACOPHONY)
+    : e.target.value==="claude2026"
+      ? structuredClone(CLAUDE_2026)
+      : FIFTHS.slice(0,4).map((note,i)=>({principle:`Principle ${i+1}`,note,role:i===0?"tonal center":"supporting voice",prominence:3}));
   changed();
 });
 document.getElementById("add-principle").addEventListener("click",()=>{if(state.mapping.length<12){const i=state.mapping.length;state.mapping.push({principle:`Principle ${i+1}`,note:FIFTHS[i%12],role:"supporting voice",prominence:3});changed();}});
