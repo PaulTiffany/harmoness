@@ -1,0 +1,65 @@
+{
+  "schema_version": "harmoness-composition/v0",
+  "name": "Claude Constitution Wheel",
+  "source": {
+    "title": "The Cost of Cacophony: Geometric Limits on Multi-Constraint Alignment",
+    "repository": "https://github.com/PaulTiffany/cost"
+  },
+  "mapping": [
+    {
+      "principle": "Helpful",
+      "pitch_class": "C",
+      "fifth_position": 0,
+      "harmonic_role": "tonic/root"
+    },
+    {
+      "principle": "Harmless",
+      "pitch_class": "G",
+      "fifth_position": 1,
+      "harmonic_role": "perfect fifth"
+    },
+    {
+      "principle": "Honest",
+      "pitch_class": "D",
+      "fifth_position": 2,
+      "harmonic_role": "two fifths from root"
+    },
+    {
+      "principle": "Autonomy",
+      "pitch_class": "A",
+      "fifth_position": 3,
+      "harmonic_role": "three fifths from root"
+    }
+  ],
+  "pair_expectations": [
+    {
+      "principles": [
+        "Helpful",
+        "Harmless"
+      ],
+      "interval_semitones": 7
+    },
+    {
+      "principles": [
+        "Helpful",
+        "Honest"
+      ],
+      "interval_semitones": 2
+    },
+    {
+      "principles": [
+        "Harmless",
+        "Autonomy"
+      ],
+      "interval_semitones": 2
+    },
+    {
+      "principles": [
+        "Honest",
+        "Autonomy"
+      ],
+      "interval_semitones": 7
+    }
+  ],
+  "intended_use": "Composition identity and witness targets; not a claim that pitch alone validates constitutional geometry."
+}
