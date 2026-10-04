@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harmoness"
+version = "0.1.0"
+description = "Deterministic musical witnesses for stochastic generative audio"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.scripts]
+harmoness = "harmoness.__main__:main"
+
+[tool.setuptools]
+packages = ["harmoness"]
