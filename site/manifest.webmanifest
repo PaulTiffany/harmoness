@@ -1,0 +1,17 @@
+{
+  "name": "Harmoness",
+  "short_name": "Harmoness",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070a12",
+  "theme_color": "#070a12",
+  "description": "Map explicit principle structures into music prompts and deterministic audio witnesses.",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
