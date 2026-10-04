@@ -36,4 +36,4 @@ jobs:
           node --check site/service-worker.js
           python -m json.tool site/manifest.webmanifest >/dev/null
           grep -q "Turn principles into musical identities" site/index.html
-          grep -q "LOCAL ANALYSIS" site/index.html
+          grep -q "LOCAL ANALYSIS" site/index.html\n          grep -q "Claude Constitution 2026" site/index.html\n          grep -q "CLAUDE_2026" site/app.js
