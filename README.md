@@ -91,3 +91,18 @@ CI should certify rendering adherence before any human-preference data are admit
 ## Status
 
 This is the first executable scaffold. No Suno API or private service dependency is required: generated audio can be produced anywhere and admitted only through the public witness contract.
+
+
+## Pages workbench
+
+The public Pages app is the user-facing instrument:
+
+- start from the Cacophony v0 mapping, the published Claude Constitution 2026 priority order, or a blank principle set;
+- edit principle names, pitch classes, ordering, and musical roles;
+- share a mapping as a URL or export it as JSON;
+- compile the map into matched Suno directions;
+- generate a witness manifest for the current condition;
+- analyze returned audio locally in the browser;
+- install the site as a lightweight offline-capable web app.
+
+The browser witness is intentionally a preview. Repository CI remains the canonical v0 witness for committed PCM WAV artifacts.
