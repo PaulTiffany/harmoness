@@ -1,0 +1,61 @@
+{
+  "schema_version": "harmoness-generation/v0",
+  "provenance": {
+    "provider": "suno",
+    "model": "record the model/version shown by the provider",
+    "generation_id": "provider-generation-id",
+    "prompt": "store the exact generation prompt here"
+  },
+  "composition_spec": "../../specs/constitution-wheel-v0.json",
+  "condition": "staged",
+  "audio": {
+    "path": "audio.wav"
+  },
+  "checks": {
+    "duration_sec": {
+      "min": 30,
+      "max": 360
+    },
+    "silence_fraction": {
+      "max": 0.2
+    },
+    "sections": [
+      {
+        "label": "helpful",
+        "start_frac": 0,
+        "end_frac": 0.25,
+        "expected_pitch_classes": [
+          "C"
+        ],
+        "min_target_fraction": 0.08
+      },
+      {
+        "label": "harmless",
+        "start_frac": 0.25,
+        "end_frac": 0.5,
+        "expected_pitch_classes": [
+          "G"
+        ],
+        "min_target_fraction": 0.08
+      },
+      {
+        "label": "honest",
+        "start_frac": 0.5,
+        "end_frac": 0.75,
+        "expected_pitch_classes": [
+          "D"
+        ],
+        "min_target_fraction": 0.08
+      },
+      {
+        "label": "autonomy",
+        "start_frac": 0.75,
+        "end_frac": 1,
+        "expected_pitch_classes": [
+          "A"
+        ],
+        "min_target_fraction": 0.08
+      }
+    ]
+  }
+}
