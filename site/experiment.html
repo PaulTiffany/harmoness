@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#070a12">
   <meta name="description" content="Harmoness maps explicit principle structures into music prompts and deterministic audio witnesses.">
-  <title>Harmoness — constitution to music</title>
+  <title>Composition studio — Harmoness</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./product.css">
+  <link rel="stylesheet" href="./compose.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="#top" aria-label="Harmoness home">
-      <span class="brand-mark">H</span><span>Harmoness</span>
+      <span class="brand-mark">h<span>≈</span></span><span>harmoness<small>COMPOSITION STUDIO</small></span>
     </a>
     <nav>
       <a href="./">Listen</a>
@@ -25,12 +27,12 @@
   </header>
 
   <main id="top">
-    <section class="hero">
-      <div class="eyebrow">PRINCIPLES → MUSIC → WITNESS</div>
-      <h1>Write the structure.<br><em>Let the music breathe.</em></h1>
-      <p class="lede">Harmoness turns an explicit principle set into a musical contract, gives that contract to a stochastic renderer such as Suno, then checks what survived.</p>
+    <section class="compose-intro">
+      <div class="eyebrow">THE HARMONY HARNESS</div>
+      <h1>Give your idea<br><em>a musical identity.</em></h1>
+      <p class="lede">Shape a musical brief. Hear its note path. Generate a take wherever you like, then bring it into the listening room with the same expectations attached.</p>
       <div class="hero-actions">
-        <a class="button primary" href="#workbench">Map a constitution</a>
+        <a class="button primary" href="#workbench">Start with a map</a>
         <a class="button ghost" href="#compose">Build a prompt</a>
       </div>
       <p class="privacy">No account. No backend. Audio analysis stays in your browser.</p>
@@ -44,7 +46,7 @@
           <p class="section-copy">Start with the <i>Cost of Cacophony</i> Constitution Wheel, or paste your own principles. Order determines the default walk around the Circle of Fifths; you can edit every note afterward.</p>
         </div>
         <div class="heading-actions">
-          <button class="small-button" id="share-map" type="button">Copy share link</button>
+          <button class="small-button" id="share-map" type="button">Copy map link</button>
           <button class="small-button" id="export-spec" type="button">Export spec</button>
         </div>
       </div>
@@ -92,7 +94,7 @@
       <div class="section-heading">
         <div>
           <div class="eyebrow">2 · COMPOSE</div>
-          <h2>Compile the map into a Suno-ready direction.</h2>
+          <h2>Compile the map into a generation direction.</h2>
           <p class="section-copy">Harmoness writes the structure underneath the song. The renderer remains free to invent performance, timbre, production, melody detail, and arrangement inside that contract.</p>
         </div>
       </div>
@@ -125,14 +127,17 @@
 
           <button id="generate-prompt" class="button primary full" type="button">Rebuild prompt</button>
           <button id="copy-manifest" class="button ghost full" type="button">Copy witness manifest</button>
+          <button id="send-brief" class="button primary full" type="button">Use brief in listening room ↗</button>
         </div>
 
         <div class="prompt-card">
           <div class="prompt-toolbar">
-            <span>Suno style / direction</span>
+            <span>Generation direction</span>
+            <button id="compact-prompt" class="small-button" type="button">Compact ≤900</button>
             <button id="copy-prompt" class="small-button" type="button">Copy</button>
           </div>
           <textarea id="prompt-output" spellcheck="false" aria-label="Generated Suno prompt"></textarea>
+          <p class="caption">Edit this direction freely. Compact makes a shorter version; check your generator’s own field limits. Rebuild replaces your edits.</p>
           <div class="prompt-foot">
             <span id="prompt-count">0 characters</span>
             <span id="prompt-path">—</span>
@@ -192,7 +197,7 @@
       <div class="section-heading">
         <div>
           <div class="eyebrow">THE CONTRACT</div>
-          <h2>Generation is allowed to be wild. Admission is not.</h2>
+          <h2>Keep the idea. Hear what changed.</h2>
         </div>
       </div>
       <div class="three-up">
@@ -204,11 +209,12 @@
   </main>
 
   <footer>
-    <div><strong>Harmoness</strong> · Generative models can improvise. The ledger decides what survived.</div>
+    <div><strong>Harmoness</strong> · Your harmony harness. Your ears make the decisions.</div>
     <div><a href="https://github.com/PaulTiffany/cost">The Cost of Cacophony</a> · <a href="https://github.com/PaulTiffany/harmoness">Source</a></div>
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="./app.js"></script>
+  <script src="./compose-product.js"></script>
 </body>
 </html>

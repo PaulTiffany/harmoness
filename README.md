@@ -1,8 +1,53 @@
-# Harmoness
+# Harmoness — Your harmony harness
 
-**Deterministic musical witnesses for stochastic generative audio.**
+**Wrangle your takes. Find your sound.**
 
-> Generative models can improvise. The ledger decides what survived.
+[Open Harmoness](https://paultiffany.github.io/harmoness/) · [Composition studio](https://paultiffany.github.io/harmoness/experiment.html)
+
+Harmoness is a free, local-first listening room for generated music and any other audio takes. Harmony + harness, with a little portamento in the portmanteau. An original illustrated cowgirl gives the product its attitude; your ears make the decisions.
+
+## Start listening
+
+1. Try the original synthetic demo, or bring up to six audio takes.
+2. Compare with optional RMS level matching, same-time switching, passage loops, and anonymous shuffled labels.
+3. Jump to listening flags, mark keepers, and write notes or record generation prompts.
+4. Name and save a session on this device. Export JSON or CSV evidence for your records.
+5. Open Compose to build a note/principle map and generation direction. Send the frozen brief back to the listening room and inspect pitch-class energy in declared regions.
+
+Opening Compose saves the current listening session and restores it on return. Draft maps and edited prompts are kept locally. Composition links share the map only. The compact prompt button produces at most 900 characters; this is a product option, not a claim about a provider’s current limits.
+
+## What ships
+
+- Responsive listening room, waveform player, keyboard controls, bounded passage loops, and filtering by flag type.
+- Average-level matching with attenuation only and sample-peak headroom; this is approximate RMS matching, not LUFS.
+- Checks for quiet passages, near-full-scale samples, large level changes, and possible abrupt endings. Every finding links to audio; none is an aesthetic verdict.
+- On-device IndexedDB sessions containing audio, notes, prompts, favorites, and the composition brief; separate JSON/CSV exports omit audio.
+- Three locally synthesized demo takes: original, louder twin, and deliberately rough edit.
+- Composition studio with editable identities, roles, presets, fifths path playback, map sharing, compact directions, witness manifests, and a listening-room handoff.
+- Pitch-class preview using independently measured channels and immutable brief snapshots. The older composition-page preview remains available and invalidates stale receipts when the map changes.
+- Background workers for listening-room measurements; offline app assets; no account, tracking, generation-service dependency, or audio upload.
+
+## Limits and privacy
+
+Up to six files, 40 MB and six minutes each, mono/stereo, supported by the browser decoder. Decoded session audio is capped at 256 MiB. Saved sessions belong to this browser; clearing site data deletes them. They do not sync and are not a backup. Keep original files. JSON/CSV reports include your notes and prompts; hidden-name mode omits filenames but cannot redact identifying text you write yourself.
+
+Browser decoding and RMS matching are approximations. Pitch-class energy does not establish key, motif preservation, artistic success, or moral alignment. Equal time regions approximate the musical form; the resolution brief’s richer instructions are not fully verified. Canonical v0 witnesses still come from the Python verifier against committed PCM WAV artifacts.
+
+## Development and validation
+
+Serve `site/` using any static HTTP server. No build step or remote API is needed.
+
+```bash
+python -m http.server 8000 --directory site
+python -m unittest discover -s tests -v
+node --test tests/audio-checks.test.cjs tests/pitch-checks.test.cjs
+```
+
+`tests/browser.cjs` uses Playwright and serves its own fixtures. Set `CHROMIUM_PATH` for an existing Chromium binary, or install Playwright’s browser. Set `QA_SCREENSHOTS` to save product screenshots. CI exercises playback, import/export, save/restore, the Compose round trip, pitch checks, loops, shuffling, the demo, and mobile overflow. See `BRAND.md` for mascot provenance and visual guidance.
+
+---
+
+## Research foundation
 
 Harmoness turns the sonification thread from [The Cost of Cacophony](https://github.com/PaulTiffany/cost) into an executable music experiment. The initial constitution mapping is the paper's Circle-of-Fifths construction:
 
@@ -91,26 +136,3 @@ CI should certify rendering adherence before any human-preference data are admit
 ## Status
 
 This is the first executable scaffold. No Suno API or private service dependency is required: generated audio can be produced anywhere and admitted only through the public witness contract.
-
-
-## Pages listening workbench
-
-The front page now starts with **Compare my takes** and **Check my audio**. Import up to six browser-decodable audio files (40 MB, six minutes, mono/stereo per take). Audio remains in memory on your device. Switch takes at the same elapsed time, use optional attenuation-only RMS level matching, hide filenames, mark favorites, and add listening notes. Export a JSON session report before closing; it contains measurements and judgments, not the audio. Filename hiding also omits filenames from the export, but is not a randomized blind trial.
-
-Clickable findings identify near-full-scale samples, quiet passages, possible abrupt endings, and adjacent five-second windows with large level changes. These are listening cues, not aesthetic verdicts, true-peak measurements, or proof of distortion. RMS matching is approximate and is not LUFS matching. Browser decoding may vary across devices. The page does not upload, persist, or regenerate your audio.
-
-The Constitution Wheel remains at `experiment.html`.
-
-### Constitution Wheel workbench
-
-The public Pages app is the user-facing instrument:
-
-- start from the Cacophony v0 mapping, the published Claude Constitution 2026 priority order, or a blank principle set;
-- edit principle names, pitch classes, ordering, and musical roles;
-- share a mapping as a URL or export it as JSON;
-- compile the map into matched Suno directions;
-- generate a witness manifest for the current condition;
-- analyze returned audio locally in the browser;
-- install the site as a lightweight offline-capable web app.
-
-The browser witness is intentionally a preview. Repository CI remains the canonical v0 witness for committed PCM WAV artifacts.
