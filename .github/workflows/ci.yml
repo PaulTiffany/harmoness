@@ -33,9 +33,28 @@ jobs:
           test -f site/service-worker.js
           test -f site/icon.svg
           node --check site/app.js
+          node --check site/workbench.js
+          node --check site/audio-checks.js
+          node --test tests/audio-checks.test.cjs
           node --check site/service-worker.js
           python -m json.tool site/manifest.webmanifest >/dev/null
-          grep -q "Turn principles into musical identities" site/index.html
+          grep -q "Turn principles into musical identities" site/experiment.html
           grep -q "LOCAL ANALYSIS" site/index.html
-          grep -q "Claude Constitution 2026" site/index.html
+          grep -q "Claude Constitution 2026" site/experiment.html
           grep -q "CLAUDE_2026" site/app.js
+
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tools
+        run: |
+          npm install --prefix /tmp/harmoness-browser --no-package-lock playwright@1.64.0
+          /tmp/harmoness-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Exercise listening workbench on desktop and phone
+        env:
+          NODE_PATH: /tmp/harmoness-browser/node_modules
+        run: node tests/browser.cjs

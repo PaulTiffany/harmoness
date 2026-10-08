@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#070a12",
   "theme_color": "#070a12",
-  "description": "Map explicit principle structures into music prompts and deterministic audio witnesses.",
+  "description": "Compare audio takes, inspect listening flags, and export your judgments with the evidence.",
   "icons": [
     {
       "src": "./icon.svg",

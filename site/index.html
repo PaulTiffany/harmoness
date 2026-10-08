@@ -1,213 +1,35 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#070a12">
-  <meta name="description" content="Harmoness maps explicit principle structures into music prompts and deterministic audio witnesses.">
-  <title>Harmoness — constitution to music</title>
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070a12"><meta name="description" content="Compare generated music takes, listen to flagged passages, and keep your judgments with the evidence.">
+<title>Harmoness — find your take</title>
+<link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./workbench.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="Harmoness home">
-      <span class="brand-mark">H</span><span>Harmoness</span>
-    </a>
-    <nav>
-      <a href="#workbench">Map</a>
-      <a href="#compose">Compose</a>
-      <a href="#verify">Verify</a>
-      <a href="https://github.com/PaulTiffany/harmoness">GitHub</a>
-    </nav>
-  </header>
-
-  <main id="top">
-    <section class="hero">
-      <div class="eyebrow">PRINCIPLES → MUSIC → WITNESS</div>
-      <h1>Write the structure.<br><em>Let the music breathe.</em></h1>
-      <p class="lede">Harmoness turns an explicit principle set into a musical contract, gives that contract to a stochastic renderer such as Suno, then checks what survived.</p>
-      <div class="hero-actions">
-        <a class="button primary" href="#workbench">Map a constitution</a>
-        <a class="button ghost" href="#compose">Build a prompt</a>
-      </div>
-      <p class="privacy">No account. No backend. Audio analysis stays in your browser.</p>
-    </section>
-
-    <section id="workbench" class="panel">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">1 · MAP</div>
-          <h2>Turn principles into musical identities.</h2>
-          <p class="section-copy">Start with the <i>Cost of Cacophony</i> Constitution Wheel, or paste your own principles. Order determines the default walk around the Circle of Fifths; you can edit every note afterward.</p>
-        </div>
-        <div class="heading-actions">
-          <button class="small-button" id="share-map" type="button">Copy share link</button>
-          <button class="small-button" id="export-spec" type="button">Export spec</button>
-        </div>
-      </div>
-
-      <div class="workbench-grid">
-        <div class="editor-card">
-          <div class="editor-toolbar">
-            <label for="preset">Preset</label>
-            <select id="preset">
-              <option value="cacophony" selected>Cacophony v0</option>
-              <option value="claude2026">Claude Constitution 2026 — priority order</option>
-              <option value="blank">Blank four-principle map</option>
-            </select>
-          </div>
-
-          <div id="principle-editor" class="principle-editor" aria-live="polite"></div>
-
-          <div class="editor-buttons">
-            <button class="small-button" id="add-principle" type="button">+ principle</button>
-            <button class="small-button" id="reset-map" type="button">Reset</button>
-          </div>
-
-          <div class="paste-box">
-            <label for="principle-lines">Paste principle names</label>
-            <textarea id="principle-lines" rows="5" placeholder="One principle per line&#10;Helpful&#10;Harmless&#10;Honest&#10;Autonomy"></textarea>
-            <button class="button ghost full" id="apply-lines" type="button">Map lines around fifths</button>
-          </div>
-        </div>
-
-        <div class="map-card">
-          <div class="map-toolbar">
-            <span>Current musical map</span>
-            <button id="play-current-map" class="small-button" type="button">Play path</button>
-          </div>
-          <div id="dynamic-wheel" class="dynamic-wheel" role="group" aria-label="Current musical map">
-            <div class="wheel-center"><span>explicit</span><strong>mapping</strong><span>first</span></div>
-          </div>
-          <div id="mapping-strip" class="mapping-strip"></div>
-          <p class="caption">Notes are compositional identities, not moral scores. Musical roles shape the generation prompt; the mechanical witness still tests declared pitch-class presence. The Claude 2026 preset preserves Anthropic’s published priority order; <a href="https://www.anthropic.com/constitution">source constitution</a>.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="compose" class="panel">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">2 · COMPOSE</div>
-          <h2>Compile the map into a Suno-ready direction.</h2>
-          <p class="section-copy">Harmoness writes the structure underneath the song. The renderer remains free to invent performance, timbre, production, melody detail, and arrangement inside that contract.</p>
-        </div>
-      </div>
-
-      <div class="compose-grid">
-        <div class="controls">
-          <label for="condition">Temporal organization</label>
-          <select id="condition">
-            <option value="resolution" selected>Resolution — crowded first, staged later</option>
-            <option value="staged">Staged — one identity at a time</option>
-            <option value="simultaneous">Simultaneous — identities together</option>
-            <option value="reverse">Reverse-order control</option>
-          </select>
-
-          <label for="mood">Musical character</label>
-          <select id="mood">
-            <option value="artpop" selected>Emotional art-pop</option>
-            <option value="ambient">Environmental / ambient</option>
-            <option value="synthpop">Cinematic synth-pop</option>
-            <option value="vocal">A cappella / vocal counterpoint</option>
-            <option value="tape">Tape-loop solo artist</option>
-          </select>
-
-          <label for="duration">Target length</label>
-          <select id="duration">
-            <option value="150">~2:30</option>
-            <option value="180" selected>~3:00</option>
-            <option value="210">~3:30</option>
-          </select>
-
-          <button id="generate-prompt" class="button primary full" type="button">Rebuild prompt</button>
-          <button id="copy-manifest" class="button ghost full" type="button">Copy witness manifest</button>
-        </div>
-
-        <div class="prompt-card">
-          <div class="prompt-toolbar">
-            <span>Suno style / direction</span>
-            <button id="copy-prompt" class="small-button" type="button">Copy</button>
-          </div>
-          <textarea id="prompt-output" spellcheck="false" aria-label="Generated Suno prompt"></textarea>
-          <div class="prompt-foot">
-            <span id="prompt-count">0 characters</span>
-            <span id="prompt-path">—</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="verify" class="panel">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">3 · VERIFY</div>
-          <h2>Bring the render back. Inspect the path.</h2>
-          <p class="section-copy">The browser preview follows the map currently shown above. Staged conditions use equal time regions; simultaneous checks all mapped pitch classes across the whole render.</p>
-        </div>
-        <span class="local-badge">LOCAL ANALYSIS</span>
-      </div>
-
-      <div class="verify-contract" id="verify-contract"></div>
-
-      <label class="dropzone" id="dropzone" for="audio-file">
-        <input id="audio-file" type="file" accept="audio/*">
-        <span class="drop-icon">♫</span>
-        <strong>Choose a render</strong>
-        <span>or drop an audio file here</span>
-        <small>Decoded and measured locally. Nothing is sent to a server.</small>
-      </label>
-
-      <div id="analysis" class="analysis hidden" aria-live="polite">
-        <div class="verdict-row">
-          <div>
-            <div class="eyebrow">BROWSER WITNESS PREVIEW</div>
-            <h3 id="verdict-title">Analyzing…</h3>
-            <p id="file-meta"></p>
-          </div>
-          <div id="verdict-chip" class="verdict pending">…</div>
-        </div>
-
-        <div class="metrics">
-          <div class="metric"><span>Duration</span><strong id="duration-value">—</strong></div>
-          <div class="metric"><span>Silence</span><strong id="silence-value">—</strong></div>
-          <div class="metric"><span>Expected path</span><strong id="path-value">—</strong></div>
-        </div>
-
-        <div class="section-results" id="section-results"></div>
-
-        <div class="receipt-actions">
-          <button id="download-receipt" class="button ghost" type="button" disabled>Download browser receipt</button>
-          <a class="button ghost" href="https://github.com/PaulTiffany/harmoness/tree/main/experiments/001-constitution-wheel">Experiment protocol</a>
-        </div>
-
-        <p class="caveat">This Pages check is a deterministic public preview, not an aesthetic score. Repository CI remains the canonical v0 witness for committed PCM WAV artifacts.</p>
-      </div>
-    </section>
-
-    <section class="panel explanation">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">THE CONTRACT</div>
-          <h2>Generation is allowed to be wild. Admission is not.</h2>
-        </div>
-      </div>
-      <div class="three-up">
-        <article><span>01</span><h3>Specify first</h3><p>Freeze a musical identity map before hearing a generation.</p></article>
-        <article><span>02</span><h3>Render freely</h3><p>Let the music model improvise the performance and production.</p></article>
-        <article><span>03</span><h3>Keep a receipt</h3><p>Separate structural fidelity from the later human question: is this actually good music?</p></article>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div><strong>Harmoness</strong> · Generative models can improvise. The ledger decides what survived.</div>
-    <div><a href="https://github.com/PaulTiffany/cost">The Cost of Cacophony</a> · <a href="https://github.com/PaulTiffany/harmoness">Source</a></div>
-  </footer>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js"></script>
-</body>
-</html>
+<header class="topbar"><a class="brand" href="./"><span class="brand-mark">H</span>Harmoness</a><nav><a href="#listen">Listen</a><a href="./experiment.html">Experiments</a><a href="https://github.com/PaulTiffany/harmoness">GitHub</a></nav></header>
+<main>
+<section class="hero"><div class="eyebrow">YOUR MUSIC · YOUR EARS · THE EVIDENCE</div><h1>Find the take.<br><em>Hear what changed.</em></h1><p class="lede">Bring your Suno generations, remasters, or any audio takes. Compare them at matched levels and jump straight to passages worth checking.</p><p class="privacy">No account. Audio stays on this device. Keep this tab open while comparing.</p></section>
+<section class="panel" id="listen">
+<div class="section-heading"><div><div class="eyebrow">01 · COMPARE TAKES</div><h2>Start with a listen.</h2></div><span class="local-badge">LOCAL ANALYSIS</span></div>
+<div id="drop-area" class="dropzone"><span class="drop-icon" aria-hidden="true">♫</span><label for="takes">Add audio takes</label><input id="takes" type="file" accept="audio/*" multiple><span>Choose files or drop them here · up to 6 takes</span><small>Up to 40 MB per file, 6 minutes and 2 channels per decoded take. Browser-supported formats.</small></div>
+<p id="status" role="status" aria-live="polite">Add two takes to compare, or one to inspect.</p>
+<div id="workspace" hidden>
+<div class="comparison-options"><label><input id="match" type="checkbox" checked> Match playback levels</label><label><input id="blind" type="checkbox"> Hide filenames</label><button id="export-session" class="small-button">Export session report</button></div>
+<p class="caption">Level matching uses whole-track RMS and only turns tracks down. It is an approximate listening aid, not perceived-loudness (LUFS) matching. Original audio is unchanged.</p>
+<div id="take-list" class="take-list"></div>
+<div class="player-card">
+<div class="player-heading"><h3 id="active-title">Choose a take</h3><span id="gain-label"></span></div>
+<canvas id="waveform" width="1000" height="120" aria-label="Waveform overview; use the time slider to seek" role="img"></canvas>
+<label for="position" class="sr-only">Playback position in seconds</label><input id="position" type="range" min="0" max="1" value="0" step="0.01">
+<div class="transport"><button id="play" class="button primary">Play</button><output id="clock">0:00 / 0:00</output><label>Volume <input id="volume" type="range" min="0" max="1" value="0.8" step="0.01"></label></div>
+<p class="caption">Switch takes to keep the same elapsed time. Different arrangements may need separate seeking. Space plays or pauses when the player button is focused.</p>
+</div>
+<div class="inspection"><div class="eyebrow">02 · CHECK MY AUDIO</div><h2>Listen closer.</h2><div id="metrics" class="metrics"></div><p class="caption">Flags identify near-full-scale samples, quiet passages, possible abrupt endings, and large level changes. They do not prove clipping or a bad mix. No flags does not mean artifact-free audio.</p><div id="findings"></div>
+<label for="notes">Your listening notes</label><textarea id="notes" rows="3" placeholder="What works? What would you fix? Notes belong to the selected take."></textarea></div>
+</div></section>
+<section class="panel"><div class="eyebrow">EXPERIMENTS</div><h2>Give the music a structure.</h2><p class="section-copy">Map principles around the Circle of Fifths, build generation directions, and inspect declared pitch-class energy.</p><p><a class="button ghost" href="./experiment.html">Open Constitution Wheel →</a></p></section>
+</main><footer><span>Harmoness · Listen, compare, keep the evidence.</span><span>Export your report before closing. Audio and notes are held in this tab only.</span></footer>
+<script src="./audio-checks.js"></script><script src="./workbench.js"></script>
+</body></html>
