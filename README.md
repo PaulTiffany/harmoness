@@ -93,7 +93,15 @@ CI should certify rendering adherence before any human-preference data are admit
 This is the first executable scaffold. No Suno API or private service dependency is required: generated audio can be produced anywhere and admitted only through the public witness contract.
 
 
-## Pages workbench
+## Pages listening workbench
+
+The front page now starts with **Compare my takes** and **Check my audio**. Import up to six browser-decodable audio files (40 MB, six minutes, mono/stereo per take). Audio remains in memory on your device. Switch takes at the same elapsed time, use optional attenuation-only RMS level matching, hide filenames, mark favorites, and add listening notes. Export a JSON session report before closing; it contains measurements and judgments, not the audio. Filename hiding also omits filenames from the export, but is not a randomized blind trial.
+
+Clickable findings identify near-full-scale samples, quiet passages, possible abrupt endings, and adjacent five-second windows with large level changes. These are listening cues, not aesthetic verdicts, true-peak measurements, or proof of distortion. RMS matching is approximate and is not LUFS matching. Browser decoding may vary across devices. The page does not upload, persist, or regenerate your audio.
+
+The Constitution Wheel remains at `experiment.html`.
+
+### Constitution Wheel workbench
 
 The public Pages app is the user-facing instrument:
 
