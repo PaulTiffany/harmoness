@@ -16,6 +16,8 @@ const CLAUDE_2026 = [
 let state = { mapping: structuredClone(CACOPHONY) };
 let audioContext;
 let lastReceipt = null;
+let analysisGeneration = 0;
+function invalidateReceipt(){ analysisGeneration++;lastReceipt=null;document.getElementById("download-receipt").disabled=true;document.getElementById("analysis").classList.add("hidden"); }
 
 function ctx(){ if(!audioContext) audioContext = new (window.AudioContext||window.webkitAudioContext)(); return audioContext; }
 function freqFor(note, octave=4){ const midi = 12*(octave+1)+NOTE_INDEX[note]; return 440*Math.pow(2,(midi-69)/12); }
@@ -57,12 +59,12 @@ function renderEditor(){
   state.mapping.forEach((item,i)=>{
     const row=document.createElement("div");row.className="principle-row";
     row.innerHTML=`
-      <button class="row-order" type="button" aria-label="Move ${item.principle} up">${i?"↑":"·"}</button>
+      <button class="row-order" type="button" aria-label="Move ${escapeHtml(item.principle)} up">${i?"↑":"·"}</button>
       <input class="row-name" value="${escapeHtml(item.principle)}" aria-label="Principle name">
       <select class="row-note" aria-label="Pitch class">${FIFTHS.map(n=>`<option ${n===item.note?"selected":""}>${n}</option>`).join("")}</select>
       <select class="row-role" aria-label="Musical role">${ROLE_OPTIONS.map(r=>`<option ${r===item.role?"selected":""}>${r}</option>`).join("")}</select>
-      <button class="row-remove" type="button" aria-label="Remove ${item.principle}">×</button>`;
-    const [up,name,note,role,remove]=row.children;
+      <button class="row-remove" type="button" aria-label="Remove ${escapeHtml(item.principle)}">×</button>`;
+    const [up,name,note,role,remove]=row.children;up.disabled=i===0;remove.disabled=state.mapping.length===1;
     up.addEventListener("click",()=>{if(i>0){[state.mapping[i-1],state.mapping[i]]=[state.mapping[i],state.mapping[i-1]];changed();}});
     name.addEventListener("input",e=>{state.mapping[i].principle=cleanPrinciple(e.target.value,i);renderMapOnly();});
     note.addEventListener("change",e=>{state.mapping[i].note=e.target.value;renderMapOnly();});
@@ -76,12 +78,12 @@ function renderMapOnly(){
   ensureMapping();
   const wheel=document.getElementById("dynamic-wheel");
   [...wheel.querySelectorAll(".wheel-node")].forEach(n=>n.remove());
-  const n=state.mapping.length;
+  const n=state.mapping.length;wheel.classList.toggle("dense",n>6);document.getElementById("add-principle").disabled=n>=12;
   state.mapping.forEach((item,i)=>{
     const angle=(-Math.PI/2)+(i*2*Math.PI/n), radius=39;
     const x=50+radius*Math.cos(angle),y=50+radius*Math.sin(angle);
     const b=document.createElement("button");b.type="button";b.className="wheel-node";b.style.left=`${x}%`;b.style.top=`${y}%`;
-    b.innerHTML=`<strong>${item.note}</strong><span>${escapeHtml(item.principle)}</span><small>${escapeHtml(item.role)}</small>`;
+    b.title=`${item.principle}: ${item.note}, ${item.role}`;b.innerHTML=`<strong>${item.note}</strong><span>${escapeHtml(item.principle)}</span><small>${escapeHtml(item.role)}</small>`;
     b.addEventListener("click",()=>tone(freqFor(item.note),.55));
     wheel.appendChild(b);
   });
@@ -89,7 +91,7 @@ function renderMapOnly(){
   syncDerived();
 }
 function changed(){ ensureMapping();renderEditor();renderMapOnly(); }
-function syncDerived(){ buildPrompt();renderVerifyContract(); }
+function syncDerived(){ invalidateReceipt();buildPrompt();renderVerifyContract(); }
 
 document.getElementById("preset").addEventListener("change",e=>{
   state.mapping=e.target.value==="cacophony"
@@ -192,10 +194,15 @@ function silenceFraction(samples,sampleRate){
 function mono(buffer){const out=new Float32Array(buffer.length);for(let ch=0;ch<buffer.numberOfChannels;ch++){const data=buffer.getChannelData(ch);for(let i=0;i<out.length;i++)out[i]+=data[i]/buffer.numberOfChannels;}return out;}
 
 async function analyzeFile(file){
+  if(file.size>40*1024*1024)throw Error("Use an audio file up to 40 MB.");
+  invalidateReceipt();const generation=analysisGeneration;const frozenMap=structuredClone(state.mapping);const frozenCondition=document.getElementById("condition").value;
   const panel=document.getElementById("analysis");panel.classList.remove("hidden");
   document.getElementById("verdict-title").textContent="Analyzing…";document.getElementById("verdict-chip").className="verdict pending";document.getElementById("verdict-chip").textContent="…";document.getElementById("file-meta").textContent=file.name;
-  const bytes=await file.arrayBuffer(),buffer=await ctx().decodeAudioData(bytes.slice(0)),samples=mono(buffer),duration=buffer.duration,silence=silenceFraction(samples,buffer.sampleRate);
-  const condition=document.getElementById("condition").value,path=pathForCondition(),n=path.length;
+  const bytes=await file.arrayBuffer(),buffer=await ctx().decodeAudioData(bytes.slice(0));
+  if(buffer.duration>360||buffer.numberOfChannels>2)throw Error("Use up to six minutes of mono or stereo audio.");
+  const samples=mono(buffer),duration=buffer.duration,silence=silenceFraction(samples,buffer.sampleRate);
+  if(generation!==analysisGeneration)return;
+  const condition=frozenCondition,path=condition==="reverse"?[...frozenMap].reverse():frozenMap,n=path.length;
   const sectionData=path.map((item,i)=>{
     const startFrac=condition==="simultaneous"?0:i/n,endFrac=condition==="simultaneous"?1:(i+1)/n;
     const energy=pitchClassEnergy(samples,buffer.sampleRate,startFrac,endFrac),fraction=energy[NOTE_INDEX[item.note]];
@@ -204,13 +211,13 @@ async function analyzeFile(file){
   const durationPass=duration>=30&&duration<=360,silencePass=silence<=.20,overall=durationPass&&silencePass&&sectionData.every(x=>x.pass);
   document.getElementById("duration-value").textContent=`${duration.toFixed(1)} s ${durationPass?"✓":"×"}`;document.getElementById("silence-value").textContent=`${(silence*100).toFixed(1)}% ${silencePass?"✓":"×"}`;
   document.getElementById("section-results").innerHTML=sectionData.map((x,i)=>`<div class="section-card ${x.pass?"pass":"fail"}"><small>${condition==="simultaneous"?"full track":`region ${i+1}`} · ${escapeHtml(x.principle)}</small><div class="big-note">${x.note}</div><div class="pct">${(x.target_fraction*100).toFixed(1)}%</div><div class="energy-bar"><span style="width:${Math.min(100,x.target_fraction*500)}%"></span></div><small>${x.pass?"target present":"below 8% threshold"}</small></div>`).join("");
-  const chip=document.getElementById("verdict-chip");chip.className=`verdict ${overall?"pass":"fail"}`;chip.textContent=overall?"PASS":"FAIL";document.getElementById("verdict-title").textContent=overall?"The declared map survived this preview.":"This render drifted from the declared map.";
-  lastReceipt={schema_version:"harmoness-browser-receipt/v1",canonical:false,map:state.mapping,condition,file:{name:file.name,type:file.type,bytes:file.size},audio:{duration_sec:Number(duration.toFixed(6)),sample_rate:buffer.sampleRate,channels:buffer.numberOfChannels,silence_fraction:Number(silence.toFixed(6))},checks:{duration:{pass:durationPass,min:30,max:360},silence:{pass:silencePass,max:.20},sections:sectionData.map(x=>({...x,target_fraction:Number(x.target_fraction.toFixed(6))}))},verdict:overall?"PASS":"FAIL"};
+  const chip=document.getElementById("verdict-chip");chip.className=`verdict ${overall?"pass":"fail"}`;chip.textContent=overall?"PASS":"FAIL";document.getElementById("verdict-title").textContent=overall?"Declared pitch classes exceeded the preview threshold.":"Some pitch classes fell below the preview threshold.";
+  lastReceipt={schema_version:"harmoness-browser-receipt/v1",canonical:false,map:frozenMap,condition,file:{name:file.name,type:file.type,bytes:file.size},audio:{duration_sec:Number(duration.toFixed(6)),sample_rate:buffer.sampleRate,channels:buffer.numberOfChannels,silence_fraction:Number(silence.toFixed(6))},checks:{duration:{pass:durationPass,min:30,max:360},silence:{pass:silencePass,max:.20},sections:sectionData.map(x=>({...x,target_fraction:Number(x.target_fraction.toFixed(6))}))},verdict:overall?"PASS":"FAIL"};
   document.getElementById("download-receipt").disabled=false;
 }
 const input=document.getElementById("audio-file");input.addEventListener("change",()=>{if(input.files?.[0])analyzeFile(input.files[0]).catch(showError);});
 const dropzone=document.getElementById("dropzone");["dragenter","dragover"].forEach(evt=>dropzone.addEventListener(evt,e=>{e.preventDefault();dropzone.style.borderColor="var(--accent)";}));["dragleave","drop"].forEach(evt=>dropzone.addEventListener(evt,e=>{e.preventDefault();dropzone.style.borderColor="";}));dropzone.addEventListener("drop",e=>{const file=e.dataTransfer.files?.[0];if(file)analyzeFile(file).catch(showError);});
-function showError(error){document.getElementById("analysis").classList.remove("hidden");document.getElementById("verdict-title").textContent="Could not decode this audio file.";const chip=document.getElementById("verdict-chip");chip.className="verdict fail";chip.textContent="ERROR";document.getElementById("file-meta").textContent=error.message||String(error);}
+function showError(error){lastReceipt=null;document.getElementById("download-receipt").disabled=true;document.getElementById("analysis").classList.remove("hidden");document.getElementById("verdict-title").textContent="Could not decode this audio file.";const chip=document.getElementById("verdict-chip");chip.className="verdict fail";chip.textContent="ERROR";document.getElementById("file-meta").textContent=error.message||String(error);}
 function downloadJson(obj,name){const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
 document.getElementById("download-receipt").addEventListener("click",()=>{if(lastReceipt)downloadJson(lastReceipt,"harmoness-browser-receipt.json");});
 
